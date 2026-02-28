@@ -20,3 +20,11 @@ start.spring.io 에서 프로젝트를 생성한다.
 - Spring Data JPA: 쿼리문 대신 자바 메서드를 이용해서 DB를 조작 할 수 있게 해준다.
 - PostgreSQL Driver: mysql, oracle과 같은 오픈소스 DB 드라이버
 
+### HelloController 생성
+1. src/main/java/[패키지명] 에 HelloController.java 파일을 생성한다.
+2. Spring Web 어노테이션을 추가한다.
+   1. @RestController: 외부 요청을 받는 컨트롤러임을 명시
+   2. @GetMapping: get 명령이 들어왔을 때 해당 함수를 실행 하도록 함. 
+3. return 값으로 "Hello, World"을 반환 함으로써 브라우저에서 해당 결과를 확인 할 수 있음.
+
+
