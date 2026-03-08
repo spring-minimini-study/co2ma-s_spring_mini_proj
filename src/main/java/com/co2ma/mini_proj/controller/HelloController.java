@@ -1,4 +1,4 @@
-package com.co2ma.mini_proj;
+package com.co2ma.mini_proj.controller;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
