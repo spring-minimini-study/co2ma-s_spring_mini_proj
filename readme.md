@@ -168,6 +168,10 @@ public class StudentController {
 #### + CORS 문제란?
 브라우저는 동일 출처 원칙(SOP) 라는 규칙을 따른다. 이 규칙에 의거하면 A 서버에 호출하는 것은 A 사이트 여야만 하는 원칙이여야 하기에, 자동으로 접속이 차단 되는 것이다.
 
+### 테스트 결과
+Gemini를 통해 테스트 사이트를 생성 Get, Post 명령을 테스트 해보고 그에 따른 결과 이다.
+<img width="456" height="600" alt="image" src="https://github.com/user-attachments/assets/5ff809ba-ae96-4f3b-8c4a-784553282d3a" />
+
 
 
 
