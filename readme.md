@@ -123,6 +123,7 @@ public interface StudentRepository extends JpaRepository<Student, String> { }
 | findById(id)    | SELECT * FROM student WHERE student_id = ? | PK를 이용한 단건 조회       |
 | findAll()       | SELECT * FROM student                      | 전체 목록 조회            |
 | delete(student) | DELETE FROM student WHERE ...              | 데이터 삭제              |
+
 그리고 JpaRepository의 generic 안에 제공 되어있는 <Student, String> 타입은 처음에 온 것은 관리할 테이블의 이름을 의미하고, 두 번째로 오는 데이터는 Primary Key의 데이터 타입을 명시한다.
 
 ### StudentController.java
