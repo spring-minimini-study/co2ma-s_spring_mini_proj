@@ -1,6 +1,5 @@
-package com.co2ma.mini_proj.repository;
+package com.co2ma.mini_proj.student;
 
-import com.co2ma.mini_proj.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
