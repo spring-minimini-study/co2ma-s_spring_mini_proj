@@ -28,7 +28,7 @@ services:
       # 1. DB 주소를 컨테이너 서비스 이름인 'db'로 덮어씁니다.
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/miniproj
       - SPRING_DATASOURCE_USERNAME=${DB_ID}
-        - SPRING_DATASOURCE_PASSWORD=${DB_PW}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PW}
       # 2. Flyway가 Docker 안에서도 잘 작동하도록 활성화 (이미 되어있지만 명시적 확인)
       - SPRING_FLYWAY_ENABLED=true
       # 3. Hibernate 설정 (기존 설정 유지)
