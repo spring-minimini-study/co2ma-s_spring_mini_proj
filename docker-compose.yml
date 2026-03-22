@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=${DB_ID}
+      - POSTGRES_PASSWORD=${DB_PW}
+      - POSTGRES_DB=miniproj
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    # DB가 진짜 살아있는지 테스트하는 명령
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d miniproj" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    # bootBuildImage로 만든 이미지 이름 입력
+    image: mini-proj:latest
+    container_name: spring-app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      # 1. DB 주소를 컨테이너 서비스 이름인 'db'로 덮어씁니다.
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/miniproj
+      - SPRING_DATASOURCE_USERNAME=${DB_ID}
+        - SPRING_DATASOURCE_PASSWORD=${DB_PW}
+      # 2. Flyway가 Docker 안에서도 잘 작동하도록 활성화 (이미 되어있지만 명시적 확인)
+      - SPRING_FLYWAY_ENABLED=true
+      # 3. Hibernate 설정 (기존 설정 유지)
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
