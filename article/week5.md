@@ -141,6 +141,11 @@ public class MemberController {
 @valid 어노테이션은 DTO에서 미리 작성 된 @NotBlank, @Size 같은 규칙에 맞는지 확인하게 한다.
 
 ## 결과
+<img width="915" height="266" alt="image" src="https://github.com/user-attachments/assets/2482a77e-462d-4693-93a3-a172d81873ab" />
+DBeaver로 생성 된 테이블을 확인 할 수 있었다.
+
+<img width="472" height="307" alt="image" src="https://github.com/user-attachments/assets/cd3d862d-e353-47f3-ae64-9a365d5cb3fd" />
+Swagger로 정상적으로 post 명령이 작동 및 db에 작성 되는지 확인 할 수 있었다.
 
 ## 이번 주차 회고
 * 너무 많은 것을 한번에 하려는 것 보다 확실히 알고 넘어가는게 중요할 것 같다.
