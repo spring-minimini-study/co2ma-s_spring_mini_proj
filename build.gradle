@@ -39,6 +39,8 @@ dependencies {
     runtimeOnly "org.flywaydb:flyway-database-postgresql"
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0' // swagger
+
+    implementation 'org.springframework.boot:spring-boot-starter-security' // spring security 추가
 }
 
 tasks.named('test') {
