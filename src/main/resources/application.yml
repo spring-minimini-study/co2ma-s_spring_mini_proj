@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: mini-proj
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/miniproj
+    username: postgres
+    password: "0000" # YAML?? 0?? ???? ??? 8??? ??? ? ?? ???? ?? ?? ?????!
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+
+# Swagger UI & API Docs
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    # enabled: false
+  packages-to-scan: com.co2ma.mini_proj
+    # api-docs:
+  # enabled: false
+  openapi:
+    info:
+      title: Mini Project API
+      version: v1.0.0
+      description: Swagger Test
+
+# JWT Secret Key
+jwt:
+  secret: Y28ybWEtbWluaS1wcm9qZWN0LXNwcmluZy1ib290LWp3dC1zZWNyZXQta2V5LXRlc3Q=
+  # ?? ??
