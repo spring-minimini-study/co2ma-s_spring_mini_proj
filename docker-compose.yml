@@ -33,3 +33,5 @@ services:
       - SPRING_FLYWAY_ENABLED=true
       # 3. Hibernate 설정 (기존 설정 유지)
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      # 4. JWT 키 설정
+      - JWT_SECRET=${JWT_SECRET_KEY}
