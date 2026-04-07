@@ -10,4 +10,4 @@
 ### 🧸[3주차 내용 정리](./article/week3.md)
 ### 🐧[4주차 내용 정리](./article/week4.md)
 ### 🚂[5주차 내용 정리](./article/week5.md)
-### 🦭[6주차 내용 정리](./article/week5.md)
+### 🦭[6주차 내용 정리](./article/week6.md)
