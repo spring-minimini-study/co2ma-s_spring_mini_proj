@@ -5,6 +5,9 @@
 * JWT가 무엇일까?
 * JWT를 적용한 로그인 폼 생성하기
 
+## 들어가기 전에
+application.properties를 yml 파일로 변경 했다. 이 방식을 더 많이 사용 한다고 한다.
+
 ## Bean 이란 무엇일까?
 spring boot의 보안 설정을 하기 위해 지난 주에 SecurityConfig.java 파일을 추가 했었다.
 이번에는 그 용도에 대해 알아 보고자 한다.
@@ -124,9 +127,109 @@ JWT의 경우는 보안 자체 보다는 **다중서버 효율성**, **모바일
 기억하면 안되는 조건이 있었다. 또한 Refresh Token을 관리하는 것이 Redis를 사용 하는 가장
 대표적인 방식이기에 이것을 경험해보고자, JWT를 직접 구현 해보려 했다.
 
+## JWT 적용하기
+이제 실제로 JWT를 적용 해보고자 한다. 다음 의존성을 추가해주자.
+```text
+implementation 'io.jsonwebtoken:jjwt-api:0.12.6' 
+runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+```
+JWT 생성을 도와주는 라이브러리 이다. 복잡한 과정을 단순화 해준다.
+
+이제 global 경로 아래에 security라는 디렉토리를 하나 만들어 준다. 다음의 class 2개를 추가한다.
+`JwtProvider`, `JwtFilter`
+```java
+private final SecretKey secretKey;
+private final long accessTokenExpireTime = 1000L * 60 * 30;
+private final long refreshTokenExpireTime = 1000L * 60 * 60 * 24 * 14;
+
+public JwtProvider(@Value("${jwt.secret}") String secretKey) {
+    byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+}
+```
+SecretKey 라는 객체를 생성해준다. .env에 설정 되어있는 비밀 키가 자동으로 매핑 된다.
+`@Value` 라는 어노테이션이 자동으로 application.yml을 찾아서 매핑을 해준다.
+
+그리고 AT, RT의 유효 시간을 기간을 정해 준다. (여기서는 임의로 30분, 14일로 지정함)
+
+```java
+public String createAccessToken(String loginId, Role role) {
+    return Jwts.builder() // 자동으로 header는 생성
+            // payload에 들어가는 부분
+            .subject(loginId) // id
+            .claim("role", role.name()) // 추가정보 (여기서는 권한)
+            .issuedAt(new Date()) // 발행 시간
+            .expiration(new Date(System.currentTimeMillis() + accessTokenExpireTime)) // 만료 시간
+            // 여기 까지 payload 부분
+            .signWith(secretKey) //signature 부분
+            .compact(); //Encode 하는 부분
+ }
+```
+AT와 RT 중 AT의 코드만 보고자 한다. Jwts에서 builder()를 하면 자동으로 header는 생성 되고,
+내부의 payload 부분을 설정 하면 된다. 그리고 signWith에서 아까 생성한 secretKey로 signature를 생성한다.
+그리고 compact()로 Encoding을 한다. RT 역시 같은 방식이다.
+
+```java
+public boolean validateToken(String token) {
+    try {
+        Jwts.parser().verifyWith(secretKey).build() // secretkey를 통해 서명을 만들어 signature와 비교
+                .parseSignedClaims(token); // 자동으로 expiration 시간을 계산해줌, 초과시 Exception 발생
+        return true;
+    } catch (ExpiredJwtException e) {
+        return false;
+    }
+ }
+```
+이 함수에서 header와 payload 부분을 뺀 signature 파트를 secretKey로 생성한 값과 비교해서
+맞으면 true를 return 해주고 만료 시간을 계산해서 초과시, 자동으로 키를 폐기 한다.
+
+```java
+private String resolveToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization"); // Bearer로 시작하는 헤더 찾기
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        return bearerToken.substring(7);
+    }
+    return null;
+}
+
+@Override
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    String token = resolveToken(request);
+
+    if (token != null && jwtProvider.validateToken(token)) {
+        String loginId = jwtProvider.getLoginId(token);
+        String role = jwtProvider.getRole(token);
+
+        String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                loginId, null, List.of(new SimpleGrantedAuthority(authority))
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    filterChain.doFilter(request, response);
+}
+```
+이 부분은 http request에서 헤더에서 Bearer를 찾아 앞에 Bearer: 부분을 슬라이싱 한 뒤
+값만 가지고와서 토큰을 비교해서 정상 접근인지 확인 하는 역할을 해준다.
+그리고 SecurityConfig.java에서 `.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);`를
+추가 해주는 것으로 spring security에서 filter를 적용하기 전에 먼저 jwtFilter를 적용 시킨다.
+
+```java
+// 3. 토큰 발급
+String accessToken = jwtProvider.createAccessToken(member.getLoginId(), member.getRole());
+String refreshToken = jwtProvider.createRefreshToken(member.getLoginId());
+```
+memberService.java 에서 key 생성을 이제 jwt로 바꿔준다.
+
+이로써 로그인시 토큰을 발급 받는 과정을 알 수 있었다.
+
 ## 이번 주차 회고
 * 하나를 알면 그 꼬리식으로 궁금해지는 부분이 생기는 것 같다.
 * 특히 JWT 하나에서만 파생 되어지는 궁금증, 보안적 문제를 신경 쓰게 되는 것 같다.
+* 약간 너무 과해지는 듯한 느낌이 들지 않게, 이어갈 예정이다.
 
 ## 다음 주 목표
-* 아직 미정
+* RT으로 키 재발급 기능 구현하기
