@@ -226,6 +226,14 @@ memberService.java 에서 key 생성을 이제 jwt로 바꿔준다.
 
 이로써 로그인시 토큰을 발급 받는 과정을 알 수 있었다.
 
+<img width="619" height="164" alt="image" src="https://github.com/user-attachments/assets/10665816-0eea-4225-b890-6249413d391d" />
+
+swagger 에서 상기와 같은 출력을 확인 할 수 있다.
+
+![인증 예시 (전화)](https://github.com/user-attachments/assets/2a6a0db1-a490-4684-abad-550717e5a9f9)
+
+*참고 시각적 예시
+
 ## 이번 주차 회고
 * 하나를 알면 그 꼬리식으로 궁금해지는 부분이 생기는 것 같다.
 * 특히 JWT 하나에서만 파생 되어지는 궁금증, 보안적 문제를 신경 쓰게 되는 것 같다.
