@@ -1,5 +1,6 @@
 package com.co2ma.mini_proj.member;
 
+import com.co2ma.mini_proj.global.security.JwtProvider;
 import com.co2ma.mini_proj.member.dto.AuthResponse;
 import com.co2ma.mini_proj.member.dto.LoginRequest;
 import com.co2ma.mini_proj.member.dto.SignUpRequest;
@@ -8,8 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +16,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void signUp(SignUpRequest request){
@@ -52,12 +52,10 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 3. 토큰 발급 (현재는 뼈대만 잡아두고, 나중에 실제 JWT 생성 로직으로 교체)
-        String accessToken = "dummy-access-token";   // 예: jwtProvider.createAccessToken(member.getId(), member.getRole())
-        String refreshToken = "dummy-refresh-token"; // 예: jwtProvider.createRefreshToken(member.getId())
+        // 3. 토큰 발급
+        String accessToken = jwtProvider.createAccessToken(member.getLoginId(), member.getRole());
+        String refreshToken = jwtProvider.createRefreshToken(member.getLoginId());
 
         return new AuthResponse(accessToken, refreshToken);
     }
-
-
 }
