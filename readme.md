@@ -12,3 +12,4 @@
 ### 🚂[5주차 내용 정리](./article/week5.md)
 ### 🦭[6주차 내용 정리](./article/week6.md)
 ### 🎶[7주차 변명 정리](./article/week7.md)
+### 🍴[8주차 내용 정리](./article/week8.md)
