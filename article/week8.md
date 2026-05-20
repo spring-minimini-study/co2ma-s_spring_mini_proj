@@ -1,4 +1,4 @@
-# 7주차
+# 8주차
 
 ## 내용 관련
 설계서: https://www.notion.so/Dazim-Capsule-33d63b506a65808c9012d20768934f7b?source=copy_link
